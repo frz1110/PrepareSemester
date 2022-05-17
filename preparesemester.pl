@@ -1,18 +1,6 @@
 :- dynamic isBentrok/1.
-
-jumlah_sks(law, 3).
-jumlah_sks(prolog, 4).
-jumlah_sks(datmin, 3).
-jumlah_sks(persdif, 3).
-
-waktu(rabu, law, 09:00, 09:50).
-waktu(kamis, law, 09:00, 10:40). 
-waktu(senin, prolog, 08:00, 10:40). 
-waktu(selasa, prolog, 08:00, 09:40). 
-waktu(selasa, datmin, 13:00, 14:40). 
-waktu(jumat, datmin, 09:00, 10:50). 
-waktu(selasa, persdif, 13:00, 14:40). 
-waktu(sabtu, persdif, 09:00, 10:50).
+:- dynamic jumlah_sks/2.
+:- dynamic waktu/4.
 
 prepare_semester :- 
     format('--- Selamat Datang di PrepareSemester! --- ~n'),
@@ -48,9 +36,10 @@ proses_command(Command) :-
 
 lihat_semua_matkul :-
     format('~n--- Daftar Mata Kuliah ---~n'),
-    bagof( (Matkul~Sks), jumlah_sks(Matkul,Sks), List),
+    bagof( (Matkul-Sks), jumlah_sks(Matkul,Sks), List),
     maplist(print_matkul,List), nl.
-print_matkul(Matkul~Sks) :-
+
+print_matkul(Matkul-Sks) :-
     kapital(Matkul,MatkulUp),
     format('~w, ~w SKS~n',[MatkulUp, Sks]).
 
@@ -73,10 +62,10 @@ convert_ke_menit(Jam:Menit, TotalMenit) :-
     TotalMenit is (Jam * 60) + Menit.
 
 pairs(Matkuls, Pairs) :-
-    findall(X~Y, (append(_,[X|R],Matkuls), member(Y,R)), Pairs).
+    findall(X-Y, (append(_,[X|R],Matkuls), member(Y,R)), Pairs).
 
 cek_jadwal_pairs([]).
-cek_jadwal_pairs([Matkul1~Matkul2|T]) :-
+cek_jadwal_pairs([Matkul1-Matkul2|T]) :-
     \+bentrok(Matkul1, Matkul2), cek_jadwal_pairs(T).
 
 cek_jadwal_tidak_bentrok(Matkuls) :-
