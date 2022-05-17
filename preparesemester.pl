@@ -15,11 +15,18 @@ waktu(selasa, persdif, 13:00, 14:40).
 waktu(sabtu, persdif, 09:00, 10:50).
 
 prepare_semester :- 
-    format('--- Selamat datang di PrepareSemester! --- ~n~nMau ngapain?~n1. Lihat daftar mata kuliah~n2. Lihat semua jadwal matkul~n3. Lihat jadwal suatu matkul~n4. Lihat jadwal beberapa matkul~n5. Susun jadwal kuliahmu~n6. Exit~n'),
+    format('--- Selamat Datang di PrepareSemester! --- ~n'),
+    format('~nMau ngapain?~n'),
+    format('1. Lihat daftar semua mata kuliah~n'),
+    format('2. Lihat semua jadwal mata kuliah~n'),
+    format('3. Lihat jadwal suatu mata kuliah~n'),
+    format('4. Lihat jadwal beberapa mata kuliah~n'),
+    format('5. Susun jadwal kuliahmu~n'),
+    format('6. Exit~n'),
     read(Command),
     proses_command(Command).
 
-proses_command(6) :- !.
+proses_command(6) :- format('--- Terima Kasih Sudah Menggunakan PrepareSemester ---'), !.
 proses_command(Command) :-
     (Command = 1 -> lihat_semua_matkul;
     Command = 2 -> \+lihat_semua_jadwal;
@@ -34,7 +41,7 @@ proses_command(Command) :-
     Command = 5 ->  
     	format('Masukkan list matkul pilihan kamu, contoh: [law, datmin, prolog, persdif]'),
     	read(Matkuls),
-        format('Masukkan batas maksimal SKS kamu, contoh: 22'),
+        format('Masukkan batas maksimum SKS kamu, contoh: 22'),
         read(MaxSks),
         cek_jadwal(Matkuls, MaxSks)),
     prepare_semester.
@@ -51,8 +58,8 @@ cek_jadwal(Matkuls, MaxSks) :-
     assert(isBentrok(false)),
     cek_jadwal_tidak_bentrok(Matkuls),
     print_jadwal_bentrok,
-    (\+cek_batas_sks(Matkuls, MaxSks), format('Jumlah SKS yang diambil tidak melebihi maksimum SKS.~n')),
-    (isBentrok(false) -> format('~n--- Jadwal Kuliahmu ---~n~n'), lihat_jadwal_pilihan(Matkuls);false).
+    (\+cek_batas_sks(Matkuls, MaxSks), format('Jumlah SKS yang diambil tidak melebihi maksimum SKS.~n~n')),
+    (isBentrok(false) -> format('--- Jadwal Kuliahmu ---~n~n'), lihat_jadwal_pilihan(Matkuls);false).
 
 cek_jadwal(_, _).
 
@@ -110,7 +117,7 @@ hitung_sks([H|T], JumlahSks) :-
 cek_batas_sks(Matkuls, MaxSks) :-
     hitung_sks(Matkuls, JumlahSks),
     MaxSks < JumlahSks,
-    format('Kamu mengambil ~w SKS. Jumlah SKS yang diambil melebihi maksimum SKS.~n', [JumlahSks]).
+    format('Kamu mengambil ~w SKS. Jumlah SKS yang diambil melebihi maksimum SKS.~n~n', [JumlahSks]).
 
 kapital(Kata,KataUp) :-
     atom_chars(Kata, [HurufPertamaCh|KataRest]),
